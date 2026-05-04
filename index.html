@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Portfolio Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Project navigation">
+        <div class="brand">
+          <div class="brand-mark">P</div>
+          <div>
+            <h1>Portfolio</h1>
+            <p>Project controls</p>
+          </div>
+        </div>
+
+        <button id="newProjectBtn" class="primary-action" type="button">
+          <span aria-hidden="true">+</span>
+          New project
+        </button>
+
+        <label class="search-box">
+          <span>Search projects</span>
+          <input id="searchInput" type="search" placeholder="Project, manager, vendor" />
+        </label>
+
+        <div class="sidebar-summary">
+          <div>
+            <span id="projectCount">0</span>
+            <p>Projects</p>
+          </div>
+          <div>
+            <span id="totalBudget">$0</span>
+            <p>Total budget</p>
+          </div>
+        </div>
+
+        <nav id="projectList" class="project-list" aria-label="Projects"></nav>
+      </aside>
+
+      <main class="workspace">
+        <section class="topbar">
+          <div>
+            <p class="eyebrow">Consolidated dashboard</p>
+            <h2 id="pageTitle">Project Portfolio Overview</h2>
+          </div>
+          <div class="topbar-actions">
+            <button id="exportBtn" class="secondary-action" type="button">Export JSON</button>
+            <label class="secondary-action import-action">
+              Import JSON
+              <input id="importInput" type="file" accept="application/json" />
+            </label>
+          </div>
+        </section>
+
+        <section class="metrics" aria-label="Portfolio summary">
+          <article>
+            <span>Development budget</span>
+            <strong id="developmentTotal">$0</strong>
+            <small id="developmentUsed">Selected project utilisation</small>
+          </article>
+          <article>
+            <span>Operating budget</span>
+            <strong id="operatingTotal">$0</strong>
+            <small id="operatingUsed">Selected project utilisation</small>
+          </article>
+          <article>
+            <span>Contract renewals</span>
+            <strong id="contractSoon">0</strong>
+            <small>contract tracking rows</small>
+          </article>
+          <article>
+            <span>Security reviews</span>
+            <strong id="securityReviewCount">0</strong>
+            <small>recorded dates</small>
+          </article>
+        </section>
+
+        <section class="chart-grid" aria-label="Budget charts">
+          <article class="chart-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Portfolio overview</p>
+                <h3>Budget by project</h3>
+              </div>
+            </div>
+            <div id="portfolioBudgetChart" class="bar-chart"></div>
+          </article>
+          <article class="chart-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Selected project</p>
+                <h3>Budget composition</h3>
+              </div>
+            </div>
+            <div id="projectCompositionChart" class="donut-wrap"></div>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <form id="projectForm" class="form-panel" autocomplete="off">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Project details</p>
+                <h3>Profile</h3>
+              </div>
+              <button id="deleteProjectBtn" class="danger-action" type="button">Delete</button>
+            </div>
+
+            <div class="field-grid">
+              <label>
+                Project name
+                <input id="projectName" required />
+              </label>
+              <label>
+                Project manager
+                <input id="projectManager" />
+              </label>
+              <label>
+                Vendor company
+                <input id="vendorCompany" />
+              </label>
+              <label>
+                System owner
+                <input id="systemOwner" />
+              </label>
+              <label>
+                Total development budget
+                <input id="developmentBudget" type="number" min="0" step="0.01" />
+              </label>
+              <label>
+                Total operating budget
+                <input id="operatingBudget" type="number" min="0" step="0.01" />
+              </label>
+            </div>
+
+            <label>
+              Detailed project description
+              <textarea id="description" rows="5"></textarea>
+            </label>
+
+            <div class="date-grid">
+              <label>
+                Budget approved date
+                <input id="budgetApprovedDate" type="date" />
+              </label>
+              <label>
+                Project commissioned date
+                <input id="commissionedDate" type="date" />
+              </label>
+            </div>
+          </form>
+
+          <section class="side-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Documents</p>
+                <h3>Attachments</h3>
+              </div>
+              <label class="icon-button" title="Attach files">
+                +
+                <input id="fileInput" type="file" multiple />
+              </label>
+            </div>
+            <ul id="attachmentList" class="attachment-list"></ul>
+          </section>
+        </section>
+
+        <section class="budget-section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Financial year breakdown</p>
+              <h3>Budgets</h3>
+            </div>
+            <button id="addFyBtn" class="secondary-action" type="button">Add FY</button>
+          </div>
+          <div id="fyRows" class="table-like"></div>
+          <div id="fySummary" class="totals-strip"></div>
+        </section>
+
+        <section class="reconciliation-grid" aria-label="Budget reconciliation">
+          <article class="reconciliation-card">
+            <span>Development reconciliation</span>
+            <strong id="developmentReconcile">$0 variance</strong>
+            <small id="developmentReconcileDetail">Project total, FY total, and spent are aligned.</small>
+          </article>
+          <article class="reconciliation-card">
+            <span>Operating reconciliation</span>
+            <strong id="operatingReconcile">$0 variance</strong>
+            <small id="operatingReconcileDetail">Project total, FY total, and spent are aligned.</small>
+          </article>
+        </section>
+
+        <section class="budget-section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Monthly utilisation</p>
+              <h3>Budget spend</h3>
+            </div>
+            <button id="addMonthBtn" class="secondary-action" type="button">Add month</button>
+          </div>
+          <div id="monthRows" class="table-like"></div>
+          <div id="monthSummary" class="totals-strip"></div>
+        </section>
+
+        <section class="contract-grid">
+          <div class="contract-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Contract tracking</p>
+                <h3>Contract expiry dates</h3>
+              </div>
+              <button data-review="contractExpiryDates" class="secondary-action add-review" type="button">Add date</button>
+            </div>
+            <ul id="contractExpiryDates" class="date-list contract-list"></ul>
+          </div>
+        </section>
+
+        <section class="chart-grid" aria-label="Project charts">
+          <article class="chart-panel wide-chart">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Selected project</p>
+                <h3>Financial year budget</h3>
+              </div>
+            </div>
+            <div id="fyBudgetChart" class="bar-chart"></div>
+          </article>
+          <article class="chart-panel wide-chart">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Selected project</p>
+                <h3>Monthly utilisation</h3>
+              </div>
+            </div>
+            <div id="monthlyUtilisationChart" class="bar-chart"></div>
+          </article>
+        </section>
+
+        <section class="review-grid">
+          <div class="review-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Security</p>
+                <h3>Penetration tests</h3>
+              </div>
+              <button data-review="penetrationTests" class="secondary-action add-review" type="button">Add date</button>
+            </div>
+            <ul id="penetrationTests" class="date-list"></ul>
+          </div>
+          <div class="review-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Security</p>
+                <h3>Vulnerability assessments</h3>
+              </div>
+              <button data-review="vulnerabilityAssessments" class="secondary-action add-review" type="button">Add date</button>
+            </div>
+            <ul id="vulnerabilityAssessments" class="date-list"></ul>
+          </div>
+          <div class="review-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Governance</p>
+                <h3>Risk assessments</h3>
+              </div>
+              <button data-review="riskAssessments" class="secondary-action add-review" type="button">Add date</button>
+            </div>
+            <ul id="riskAssessments" class="date-list"></ul>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <template id="fyRowTemplate">
+      <div class="data-row fy-row">
+        <label>
+          Financial year
+          <input class="fy-year" placeholder="FY2026" />
+        </label>
+        <label>
+          Development budget
+          <input class="fy-development" type="number" min="0" step="0.01" />
+        </label>
+        <label>
+          Operating budget
+          <input class="fy-operating" type="number" min="0" step="0.01" />
+        </label>
+        <button class="icon-button remove-row" type="button" title="Remove row">x</button>
+      </div>
+    </template>
+
+    <template id="monthRowTemplate">
+      <div class="data-row month-row">
+        <label>
+          Month
+          <input class="util-month" type="month" />
+        </label>
+        <label>
+          Development utilised
+          <input class="util-development" type="number" min="0" step="0.01" />
+        </label>
+        <label>
+          Operating utilised
+          <input class="util-operating" type="number" min="0" step="0.01" />
+        </label>
+        <button class="icon-button remove-row" type="button" title="Remove row">x</button>
+      </div>
+    </template>
+
+    <template id="dateRowTemplate">
+      <li>
+        <input type="date" />
+        <button class="icon-button remove-date" type="button" title="Remove date">x</button>
+      </li>
+    </template>
+
+    <template id="contractRowTemplate">
+      <li>
+        <label>
+          Expiry date
+          <input class="contract-date" type="date" />
+        </label>
+        <label>
+          Description
+          <input class="contract-description" placeholder="Contract name, scope, vendor, or renewal note" />
+        </label>
+        <button class="icon-button remove-contract" type="button" title="Remove contract row">x</button>
+      </li>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
